@@ -8,11 +8,7 @@ This module is designed for the creation and management of ECR Docker image repo
 module "ecr" {
   source    = "https://github.com/clearscale/tf-aws-container-ecr.git"
 
-  accounts = [
-    { name = "shared", provider = "aws", key = "shared"}
-  ]
 
-  prefix   = "ex"
   client   = "example"
   project  = "aws"
   env      = "dev"
