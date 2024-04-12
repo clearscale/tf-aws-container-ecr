@@ -6,13 +6,39 @@ This module is designed for the creation and management of ECR Docker image repo
 
 ```terraform
 module "ecr" {
-  source    = "https://github.com/clearscale/tf-aws-container-ecr.git"
+  #source    = "github.com/clearscale/tf-aws-container-ecr.git?ref=v1.0.0"
 
+  account = {
+    id = "*", name = local.account.name, provider = "aws", key = "current", region = local.region.name
+  }
 
-  client   = "example"
-  project  = "aws"
-  env      = "dev"
-  region   = "us-east-1"
-  name     = "helloworld"
+  prefix  = local.context.prefix
+  client  = local.context.client
+  project = local.context.project
+  env     = local.account.name
+  region  = local.region.name
+  name    = local.name
+
+  services = {
+    codebuild = true
+  }
 }
+```
+
+## Plan
+
+```bash
+terraform plan -var='name=test'
+```
+
+## Apply
+
+```bash
+terraform apply -var='name=test'
+```
+
+## Destroy
+
+```bash
+terraform destroy -var='name=test'
 ```
