@@ -9,7 +9,7 @@ module "ecr" {
   source = "github.com/clearscale/tf-aws-container-ecr.git?ref=v1.0.0"
 
   account = {
-    id = "*", name = local.account.name, provider = "aws", key = "current", region = local.region.name
+    id = "*", name = "shared", provider = "aws", key = "current", region = "us-east-1"
   }
 
   prefix  = local.context.prefix
