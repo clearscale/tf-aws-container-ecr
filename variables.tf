@@ -359,6 +359,12 @@ variable "ecr_registry_pull_through_cache_rules" {
   default     = {}
 }
 
+variable "ssm_parameter_name" {
+  type        = string
+  description = "(Required). SSM parameter name to store resource ARN."
+  default     = null
+}
+
 variable "tags" {
   description = "(Optional). A map of tags to assign to the resources"
   type        = map(string)
