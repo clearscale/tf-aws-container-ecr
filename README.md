@@ -42,3 +42,7 @@ terraform apply -var='name=test'
 ```bash
 terraform destroy -var='name=test'
 ```
+
+## Encryption
+
+If `var.ecr_encryption_type` is set to KMS and `var.ecr_kms_key_arn` is not specified. A KMS key will be created and used automatically. The generated KMS key settings can be overriden with `var.ecr_kms_key`. KMS is used by default, but `AES256` can be specified with `var.ecr_encryption_type` as an alternative.
