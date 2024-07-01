@@ -1,6 +1,6 @@
 module "kms" {
   source = "../tf-aws-kms"
-  count  = (local.kms_key) == null) ? 0 : 1
+  count  = (var.ecr_kms_key_arn == null && lower(var.ecr_encryption_type) == "kms") ? 1 : 0
 
   prefix  = var.prefix
   client  = var.client

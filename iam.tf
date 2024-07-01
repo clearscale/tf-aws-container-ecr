@@ -1,4 +1,6 @@
 data "aws_iam_policy_document" "this" {
+  count = (var.policy == null) ? 1 : 0
+
   dynamic "statement" {
     for_each = var.private == false ? [1] : []
 

@@ -25,7 +25,7 @@ module "ecr" {
   # Repo Permissions
   create_repository_policy           = false
   attach_repository_policy           = true
-  repository_policy                  = data.aws_iam_policy_document.this.json
+  repository_policy                  = coalesce(var.policy, data.aws_iam_policy_document.this[0].json)
   repository_read_access_arns        = local.perms_read
   repository_read_write_access_arns  = local.perms_write
   repository_lambda_read_access_arns = local.perms_read_lambda

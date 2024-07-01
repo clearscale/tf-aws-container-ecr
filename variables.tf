@@ -17,8 +17,8 @@ locals {
 
   services_map = {
     ecr       = { name = "ECR",       service = "ecr.amazonaws.com" }
-    ecs       = { name = "ECS"        service = "ecs.amazonaws.com"}
-    ecs_tasks = { name = "ECSTasks"   service = "ecs-tasks.amazonaws.com"}
+    ecs       = { name = "ECS",       service = "ecs.amazonaws.com"}
+    ecs_tasks = { name = "ECSTasks",  service = "ecs-tasks.amazonaws.com"}
     eks       = { name = "EKS",       service = "eks.amazonaws.com" }
     codebuild = { name = "CodeBuild", service = "codebuild.amazonaws.com" }
     lambda    = { name = "Lambda",    service = "lambda.amazonaws.com" }
@@ -106,6 +106,12 @@ variable "create" {
   type        = bool
   description = "(Optional). Whether or not to create the repository. Does it need to be created or do the settings need to be configured?"
   default     = true
+}
+
+variable "policy" {
+  type        = string
+  description = "(Optional). A aws_iam_policy_document json encoded string to override the default repository policy."
+  default     = null
 }
 
 #
