@@ -1,12 +1,24 @@
 locals {
   name             = lower(replace(var.name, " ", "-"))
-  perms_read       = var.read
+  partition        = data.aws_partition.this.partition
   perms_write      = var.write
   perms_copy       = var.copy
   perms_read_write = concat(local.perms_read, local.perms_write)
 
+  perms_read = [
+    for arn in var.read : arn
+    if !startswith(arn, "arn:${local.partition}:lambda:")
+  ]
+
+  perms_read_lambda = [
+    for arn in var.read : arn
+    if startswith(arn, "arn:${local.partition}:lambda:")
+  ]
+
   services_map = {
     ecr       = { name = "ECR",       service = "ecr.amazonaws.com" }
+    ecs       = { name = "ECS",       service = "ecs.amazonaws.com"}
+    ecs_tasks = { name = "ECSTasks",  service = "ecs-tasks.amazonaws.com"}
     eks       = { name = "EKS",       service = "eks.amazonaws.com" }
     codebuild = { name = "CodeBuild", service = "codebuild.amazonaws.com" }
     lambda    = { name = "Lambda",    service = "lambda.amazonaws.com" }
@@ -27,6 +39,11 @@ locals {
     "ecr:BatchCheckLayerAvailability",
     "ecr:GetAuthorizationToken"
   ]
+
+  kms_key = ((lower(var.ecr_encryption_type) == "kms")
+    ? coalesce(var.ecr_kms_key_arn, module.kms[0].key_arn)
+    : null
+  )
 }
 
 variable "prefix" {
@@ -91,11 +108,17 @@ variable "create" {
   default     = true
 }
 
+variable "policy" {
+  type        = string
+  description = "(Optional). A aws_iam_policy_document json encoded string to override the default repository policy."
+  default     = null
+}
+
 #
 # ARNs of trusted resources or services.
 #
 variable "read" {
-  description = "(Optional). ARNs of resources or services to give read (pull) access to."
+  description = "(Optional). ARNs of resources or services to give read (pull) access to. Any Lambda ARNs will be automatically parsed and moved to `repository_lambda_read_access_arns`."
   type        = list(string)
   default     = []
 }
@@ -159,6 +182,12 @@ variable "services" {
   default = {}
 }
 
+variable "ecr_policy_statements" {
+  description = "(Optional). A map of IAM policy [statements](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document#statement) for custom permission usage."
+  type        = any
+  default     = {}
+}
+
 #
 # https://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html
 #
@@ -196,20 +225,14 @@ variable "ecr_lifecycle_policy" {
   }
 }
 
-variable "ecr_manage_scanning" {
-  description = "Whether to manage registry scanning configuration."
-  type        = bool
-  default     = true
-}
-
 variable "ecr_scan_type" {
-  description = "The type of scan to perform on the registry."
+  description = "(Optional). The type of scan to perform on the registry."
   type        = string
   default     = "ENHANCED"
 }
 
 variable "ecr_scan_rules" {
-  description = "The rules for the registry scan."
+  description = "(Optional). The rules for the registry scan."
   type = list(object({
     scan_frequency = string
     filter = list(object({
@@ -224,4 +247,126 @@ variable "ecr_scan_rules" {
       filter_type = "WILDCARD"
     }]
   }]
+}
+
+variable "ecr_image_scan_on_push" {
+  description = "(Optional). Indicates whether images are scanned after being pushed to the repository (`true`) or not scanned (`false`)."
+  type        = bool
+  default     = true
+}
+
+variable "ecr_encryption_type" {
+  description = "(Optional). The encryption type for the repository. Must be one of: `KMS` or `AES256`. Defaults to `KMS`."
+  type        = string
+  default     = "KMS"
+
+  validation {
+    condition     = contains(["KMS", "AES256"], var.ecr_encryption_type)
+    error_message = "The encryption type must be one of: 'KMS' or 'AES256'."
+  }
+}
+
+variable "ecr_kms_key_arn" {
+  description = "(Optional). The ARN of the KMS key to use when encryption_type is `KMS`. If not specified, and `var.ecr_encryption_type` = 'KMS', a KMS key will be generated. Otherwise, it uses the default AWS managed key for ECR."
+  type        = string
+  default     = null
+}
+
+variable "ecr_kms_key" {
+  description = "(Optional). KMS settings for the ECR repository. It's advised to create your own KMS key and pass the ARN to `var.ecr_kms_key_arn` instead. Like `var.ecr_kms_key_arn` this variable is only used if `var.ecr_encryption_type` = 'KMS'."
+  type = object({
+    description                            = optional(string, null)
+    aliases                                = optional(list(string), [])
+    computed_aliases                       = optional(any, {})
+    aliases_use_name_prefix                = optional(bool, false)
+    multi_region                           = optional(bool, false)
+    enable_key_rotation                    = optional(bool, true)
+    rotation_period_in_days                = optional(number, 365)
+    deletion_window_in_days                = optional(number, 30)
+    create_external                        = optional(bool, false)
+    bypass_policy_lockout_safety_check     = optional(bool, false)
+    custom_key_store_id                    = optional(string, null)
+    customer_master_key_spec               = optional(string, "SYMMETRIC_DEFAULT")
+    key_material_base64                    = optional(string, null)
+    key_usage                              = optional(string, "ENCRYPT_DECRYPT")
+    policy                                 = optional(string, null)
+    valid_to                               = optional(string, null)
+    key_owners                             = optional(list(string), [])
+    key_administrators                     = optional(list(string), [])
+    key_users                              = optional(list(string), [])
+    key_service_users                      = optional(list(string), [])
+    key_service_roles_for_autoscaling      = optional(list(string), [])
+    key_symmetric_encryption_users         = optional(list(string), [])
+    key_hmac_users                         = optional(list(string), [])
+    key_asymmetric_public_encryption_users = optional(list(string), [])
+    key_asymmetric_sign_verify_users       = optional(list(string), [])
+    key_statements                         = optional(any, {})
+    source_policy_documents                = optional(list(string), [])
+    override_policy_documents              = optional(list(string), [])
+    enable_route53_dnssec                  = optional(bool, false)
+    route53_dnssec_sources                 = optional(list(any), [])
+    create_replica                         = optional(bool, false)
+    primary_key_arn                        = optional(string, null)
+    create_replica_external                = optional(bool, false)
+    primary_external_key_arn               = optional(string, null)
+    grants                                 = optional(any, {})
+    tags                                   = optional(map(string), null)
+  })
+  default = {}
+}
+
+variable "ecr_public_repository_catalog_data" {
+  description = "(Optional). Catalog data configuration for the repository"
+  type        = any
+  default     = {}
+}
+
+variable "ecr_force_delete" {
+  description = "(Optional). If `true`, will delete the repository even if it contains images. Defaults to `false`."
+  type        = bool
+  default     = false
+}
+
+variable "ecr_image_tag_mutability" {
+  description = "(Optional). The tag mutability setting for the repository. Must be one of: `MUTABLE` or `IMMUTABLE`. Defaults to `IMMUTABLE`."
+  type        = string
+  default     = "IMMUTABLE"
+}
+
+variable "ecr_registry_policy_create" {
+  description = "(Optional). Determines whether a registry policy will be created"
+  type        = bool
+  default     = false
+}
+
+variable "ecr_registry_policy" {
+  description = "(Optional). The policy document. This is a JSON formatted string"
+  type        = string
+  default     = null
+}
+
+variable "ecr_registry_manage_scanning" {
+  description = "(Optional). Determines whether the registry scanning configuration will be managed."
+  type        = bool
+  default     = false
+}
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_pull_through_cache_rule
+# https://docs.aws.amazon.com/AmazonECR/latest/userguide/pull-through-cache.html
+variable "ecr_registry_pull_through_cache_rules" {
+  description = "(Optional). List of pull through cache rules to create"
+  type        = map(map(string))
+  default     = {}
+}
+
+variable "ssm_parameter_name" {
+  type        = string
+  description = "(Required). SSM parameter name to store resource ARN."
+  default     = null
+}
+
+variable "tags" {
+  description = "(Optional). A map of tags to assign to the resources"
+  type        = map(string)
+  default     = null
 }
