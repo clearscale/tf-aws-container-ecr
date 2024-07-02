@@ -276,7 +276,7 @@ variable "ecr_kms_key" {
   description = "(Optional). KMS settings for the ECR repository. It's advised to create your own KMS key and pass the ARN to `var.ecr_kms_key_arn` instead. Like `var.ecr_kms_key_arn` this variable is only used if `var.ecr_encryption_type` = 'KMS'."
   type = object({
     description                            = optional(string, null)
-    aliases                                = optional(list(string), [])
+    aliases                                = optional(list(string), null)
     computed_aliases                       = optional(any, {})
     aliases_use_name_prefix                = optional(bool, false)
     multi_region                           = optional(bool, false)
