@@ -1,6 +1,5 @@
 module "ecr" {
-  source  = "terraform-aws-modules/ecr/aws"
-  version = "2.2.0"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ecr.git?ref=9daab0795f9759922a0664c8eca09ade5262cb3e"
 
   # General
   create                          = true

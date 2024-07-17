@@ -69,10 +69,10 @@ terraform destroy -var='name=test'
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_ecr"></a> [ecr](#module\_ecr) | terraform-aws-modules/ecr/aws | 2.2.0 |
+| <a name="module_ecr"></a> [ecr](#module\_ecr) | git::https://github.com/terraform-aws-modules/terraform-aws-ecr.git | 9daab0795f9759922a0664c8eca09ade5262cb3e |
 | <a name="module_kms"></a> [kms](#module\_kms) | github.com/clearscale/tf-aws-kms.git | v1.0.0 |
-| <a name="module_ssm"></a> [ssm](#module\_ssm) | terraform-aws-modules/ssm-parameter/aws | ~> 1.1.1 |
-| <a name="module_std"></a> [std](#module\_std) | github.com/clearscale/tf-standards.git | v1.0.0 |
+| <a name="module_ssm"></a> [ssm](#module\_ssm) | git::https://github.com/terraform-aws-modules/terraform-aws-ssm-parameter.git | b7659e8b46aa626065c60fbfa7b78c1fedf43d7c |
+| <a name="module_std"></a> [std](#module\_std) | git::https://github.com/clearscale/tf-standards.git | c1ef5c7b2df858153a3e6ee90d92d70783029704 |
 
 ## Resources
 
