@@ -333,12 +333,6 @@ variable "ecr_image_tag_mutability" {
   default     = "IMMUTABLE"
 }
 
-variable "ecr_registry_policy_create" {
-  description = "(Optional). Determines whether a registry policy will be created"
-  type        = bool
-  default     = false
-}
-
 variable "ecr_registry_policy" {
   description = "(Optional). The policy document. This is a JSON formatted string"
   type        = string
