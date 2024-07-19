@@ -274,45 +274,8 @@ variable "ecr_kms_key_arn" {
 
 variable "ecr_kms_key" {
   description = "(Optional). KMS settings for the ECR repository. It's advised to create your own KMS key and pass the ARN to `var.ecr_kms_key_arn` instead. Like `var.ecr_kms_key_arn` this variable is only used if `var.ecr_encryption_type` = 'KMS'."
-  type = object({
-    description                            = optional(string, null)
-    aliases                                = optional(list(string), null)
-    computed_aliases                       = optional(any, {})
-    aliases_use_name_prefix                = optional(bool, false)
-    multi_region                           = optional(bool, false)
-    enable_key_rotation                    = optional(bool, true)
-    rotation_period_in_days                = optional(number, 365)
-    deletion_window_in_days                = optional(number, 30)
-    create_external                        = optional(bool, false)
-    bypass_policy_lockout_safety_check     = optional(bool, false)
-    custom_key_store_id                    = optional(string, null)
-    customer_master_key_spec               = optional(string, "SYMMETRIC_DEFAULT")
-    key_material_base64                    = optional(string, null)
-    key_usage                              = optional(string, "ENCRYPT_DECRYPT")
-    policy                                 = optional(string, null)
-    valid_to                               = optional(string, null)
-    key_owners                             = optional(list(string), [])
-    key_administrators                     = optional(list(string), [])
-    key_users                              = optional(list(string), [])
-    key_service_users                      = optional(list(string), [])
-    key_service_roles_for_autoscaling      = optional(list(string), [])
-    key_symmetric_encryption_users         = optional(list(string), [])
-    key_hmac_users                         = optional(list(string), [])
-    key_asymmetric_public_encryption_users = optional(list(string), [])
-    key_asymmetric_sign_verify_users       = optional(list(string), [])
-    key_statements                         = optional(any, {})
-    source_policy_documents                = optional(list(string), [])
-    override_policy_documents              = optional(list(string), [])
-    enable_route53_dnssec                  = optional(bool, false)
-    route53_dnssec_sources                 = optional(list(any), [])
-    create_replica                         = optional(bool, false)
-    primary_key_arn                        = optional(string, null)
-    create_replica_external                = optional(bool, false)
-    primary_external_key_arn               = optional(string, null)
-    grants                                 = optional(any, {})
-    tags                                   = optional(map(string), null)
-  })
-  default = {}
+  type        = any
+  default     = {}
 }
 
 variable "ecr_public_repository_catalog_data" {

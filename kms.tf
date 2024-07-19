@@ -11,7 +11,7 @@ module "kms" {
   name    = var.name
 
   description                            = lookup(var.ecr_kms_key, "description", "KMS Key for the ${local.name} ECR repository.")
-  aliases                                = coalesce(lookup(var.ecr_kms_key, "aliases", null), ["ecr/${local.name}"])
+  aliases                                = lookup(var.ecr_kms_key, "aliases", ["ecr/${local.name}"])
   computed_aliases                       = lookup(var.ecr_kms_key, "computed_aliases", {})
   aliases_use_name_prefix                = lookup(var.ecr_kms_key, "aliases_use_name_prefix", false)
   multi_region                           = lookup(var.ecr_kms_key, "multi_region", false)
