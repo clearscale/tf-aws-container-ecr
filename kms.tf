@@ -45,5 +45,5 @@ module "kms" {
   create_replica_external                = lookup(var.ecr_kms_key, "create_replica_external", false)
   primary_external_key_arn               = lookup(var.ecr_kms_key, "primary_external_key_arn", null)
   grants                                 = lookup(var.ecr_kms_key, "grants", {})
-  tags                                   = lookup(var.ecr_kms_key, "tags", null)
+  tags                                   = lookup(var.ecr_kms_key, "tags", var.tags)
 }
