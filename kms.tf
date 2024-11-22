@@ -1,5 +1,5 @@
 module "kms" {
-  source = "github.com/clearscale/tf-aws-kms.git?ref=v1.0.0"
+  source = "git::https://github.com/clearscale/tf-aws-kms.git?ref=f1e486231334029fcfe3020a8df2d1b13ad1d8cf"
   count  = (var.ecr_kms_key_arn == null && lower(var.ecr_encryption_type) == "kms") ? 1 : 0
 
   prefix  = var.prefix

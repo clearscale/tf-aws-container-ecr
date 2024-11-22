@@ -25,14 +25,14 @@ data "aws_iam_policy_document" "this" {
   dynamic "statement" {
     for_each = var.private ? [1] : []
 
-    content{ 
+    content {
       sid    = "AllowPrivateReadOnlyAccess"
       effect = "Allow"
 
 
       principals {
         type = "AWS"
-        identifiers = coalescelist(
+        identifiers = concat(
           local.perms_read_write,
           ["arn:${data.aws_partition.this.partition}:iam::${data.aws_caller_identity.this.account_id}:root"],
         )
@@ -58,13 +58,16 @@ data "aws_iam_policy_document" "this" {
   dynamic "statement" {
     for_each = var.private && length(local.perms_read) > 0 ? [1] : []
 
-    content{ 
+    content {
       sid    = "AllowPullAccess"
       effect = "Allow"
 
       principals {
-        type        = "AWS"
-        identifiers = local.perms_read
+        type = "AWS"
+        identifiers = concat(
+          local.perms_read_write,
+          ["arn:${data.aws_partition.this.partition}:iam::${data.aws_caller_identity.this.account_id}:root"],
+        )
       }
 
       actions = [
@@ -78,7 +81,7 @@ data "aws_iam_policy_document" "this" {
   dynamic "statement" {
     for_each = var.private && length(local.perms_write) > 0 ? local.perms_write : []
 
-    content{ 
+    content {
       sid    = "AllowWriteAccess"
       effect = "Allow"
 
@@ -124,11 +127,11 @@ data "aws_iam_policy_document" "this" {
   dynamic "statement" {
     for_each = var.private && length(local.perms_copy) > 0 ? [1] : []
 
-    content{ 
+    content {
       sid       = "AllowReplication"
       effect    = "Allow"
       resources = local.perms_copy
-      actions   = [
+      actions = [
         "ecr:ReplicateImage"
       ]
     }
