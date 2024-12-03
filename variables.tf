@@ -58,7 +58,7 @@ variable "region" {
 
 variable "name" {
   type        = string
-  description = "(Optional). The name of the resource, application, or service."
+  description = "(Required). The name of the resource, application, or service."
 }
 
 #

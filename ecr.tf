@@ -50,5 +50,5 @@ module "ecr" {
   registry_scan_rules                    = var.ecr_registry_manage_scanning ? var.ecr_scan_rules : []
 
   # Tags
-  tags = var.tags
+  tags = local.tags
 }

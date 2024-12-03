@@ -4,5 +4,5 @@ module "ssm" {
   name  = coalesce(var.ssm_parameter_name, "/ecr/${var.env}/${local.name}")
   value = module.ecr.repository_arn
 
-  tags = var.tags
+  tags = local.tags
 }
