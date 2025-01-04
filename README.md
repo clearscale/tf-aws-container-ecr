@@ -63,16 +63,16 @@ terraform destroy -var='name=test'
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.56.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.82.2 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_ecr"></a> [ecr](#module\_ecr) | git::https://github.com/terraform-aws-modules/terraform-aws-ecr.git | 9daab0795f9759922a0664c8eca09ade5262cb3e |
-| <a name="module_kms"></a> [kms](#module\_kms) | git::https://github.com/clearscale/tf-aws-kms.git | 88719d20f5fa278d13407088c2fc18d4727f9dd3 |
+| <a name="module_kms"></a> [kms](#module\_kms) | github.com/clearscale/tf-aws-kms.git | n/a |
 | <a name="module_ssm"></a> [ssm](#module\_ssm) | git::https://github.com/terraform-aws-modules/terraform-aws-ssm-parameter.git | b7659e8b46aa626065c60fbfa7b78c1fedf43d7c |
-| <a name="module_std"></a> [std](#module\_std) | git::https://github.com/clearscale/tf-standards.git | c1ef5c7b2df858153a3e6ee90d92d70783029704 |
+| <a name="module_std"></a> [std](#module\_std) | github.com/clearscale/tf-standards.git | n/a |
 
 ## Resources
 
@@ -109,10 +109,10 @@ terraform destroy -var='name=test'
 | <a name="input_overrides"></a> [overrides](#input\_overrides) | A map of overrides to pass to the module that can be used by the local overrides | `map(any)` | `{}` | no |
 | <a name="input_policy"></a> [policy](#input\_policy) | (Optional). A aws\_iam\_policy\_document json encoded string to override the default repository policy. | `string` | `null` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | (Optional). Prefix override for all generated naming conventions. | `string` | `"cs"` | no |
-| <a name="input_private"></a> [private](#input\_private) | (Optional). Private or public repository? | `bool` | `true` | no |
+| <a name="input_private"></a> [private](#input\_private) | (Optional). Private or public repository?. When creating a public repository (private = false), the region must be set to 'us-east-1'. | `bool` | `true` | no |
 | <a name="input_project"></a> [project](#input\_project) | (Optional). Name of the client project. | `string` | `"pmod"` | no |
 | <a name="input_read"></a> [read](#input\_read) | (Optional). ARNs of resources or services to give read (pull) access to. Any Lambda ARNs will be automatically parsed and moved to `repository_lambda_read_access_arns`. | `list(string)` | `[]` | no |
-| <a name="input_region"></a> [region](#input\_region) | (Optional). Name of the region. | `string` | `"us-west-1"` | no |
+| <a name="input_region"></a> [region](#input\_region) | (Optional). Name of the region. | `string` | `"us-east-1"` | no |
 | <a name="input_services"></a> [services](#input\_services) | (Optional). Toggle AWS service access on or off. | <pre>object({<br>    ecr       = optional(bool, false)<br>    eks       = optional(bool, false)<br>    codebuild = optional(bool, false)<br>    lambda    = optional(bool, false)<br>    beanstalk = optional(bool, false)<br>    sagemaker = optional(bool, false)<br>    batch     = optional(bool, false)<br>  })</pre> | `{}` | no |
 | <a name="input_ssm_parameter_name"></a> [ssm\_parameter\_name](#input\_ssm\_parameter\_name) | (Required). SSM parameter name to store resource ARN. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional). A map of tags to assign to the resources | `map(string)` | `null` | no |

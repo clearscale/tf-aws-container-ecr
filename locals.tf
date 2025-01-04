@@ -10,7 +10,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   env = coalesce(var.env, "dev")
   # tflint-ignore: terraform_unused_declarations
-  region = coalesce(var.region, "us-west-1")
+  region = coalesce(var.region, "us-east-1")
   # tflint-ignore: terraform_unused_declarations
   name = module.std.names.aws[var.account.name].general
   # tflint-ignore: terraform_unused_declarations

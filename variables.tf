@@ -1,6 +1,6 @@
 #
 # Override var
-#
+# tflint-ignore: terraform_unused_declarations
 variable "overrides" {
   description = "A map of overrides to pass to the module that can be used by the local overrides"
   type        = map(any)
@@ -53,7 +53,7 @@ variable "env" {
 variable "region" {
   type        = string
   description = "(Optional). Name of the region."
-  default     = "us-west-1"
+  default     = "us-east-1"
 }
 
 variable "name" {
@@ -67,13 +67,8 @@ variable "name" {
 
 variable "private" {
   type        = bool
-  description = "(Optional). Private or public repository?"
+  description = "(Optional). Private or public repository?. When creating a public repository (private = false), the region must be set to 'us-east-1'."
   default     = true
-
-  validation {
-    condition     = var.private || (var.private == false && var.region == "us-east-1")
-    error_message = "When creating a public repository (private = false), the region must be set to 'us-east-1'."
-  }
 }
 
 variable "create" {
