@@ -12,8 +12,8 @@ module "ecr" {
 
   # Encryption
   repository_encryption_type = var.ecr_encryption_type
-  repository_kms_key         = local.kms_key 
- 
+  repository_kms_key         = local.kms_key
+
   # Repo Lifecycle
   create_lifecycle_policy     = (var.ecr_lifecycle_policy != null)
   repository_lifecycle_policy = (var.ecr_lifecycle_policy != null) ? jsonencode(var.ecr_lifecycle_policy) : null
@@ -39,8 +39,8 @@ module "ecr" {
   registry_pull_through_cache_rules = var.ecr_registry_pull_through_cache_rules
 
   # Registry Replication
-  create_registry_replication_configuration  = (
-    length(local.perms_copy) > 0 ? true : false 
+  create_registry_replication_configuration = (
+    length(local.perms_copy) > 0 ? true : false
   )
   registry_replication_rules = local.perms_copy
 
@@ -50,5 +50,5 @@ module "ecr" {
   registry_scan_rules                    = var.ecr_registry_manage_scanning ? var.ecr_scan_rules : []
 
   # Tags
-  tags = var.tags
+  tags = local.tags
 }

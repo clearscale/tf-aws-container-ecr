@@ -1,17 +1,17 @@
 module "kms" {
-  source = "github.com/clearscale/tf-aws-kms.git?ref=v1.0.0"
+  source =  "github.com/clearscale/tf-aws-kms.git"
   count  = (var.ecr_kms_key_arn == null && lower(var.ecr_encryption_type) == "kms") ? 1 : 0
 
-  prefix  = var.prefix
-  client  = var.client
-  project = var.project
-  account = var.account
-  env     = var.env
-  region  = var.region
-  name    = var.name
+  prefix  = local.prefix
+  client  = local.client
+  project = local.project
+  account = local.account
+  env     = local.env
+  region  = local.region
+  name    = local.name_std
 
   description                            = lookup(var.ecr_kms_key, "description", "KMS Key for the ${local.name} ECR repository.")
-  aliases                                = lookup(var.ecr_kms_key, "aliases", ["ecr/${local.name}"])
+  aliases                                = lookup(var.ecr_kms_key, "aliases", coalesce(local.kms_alias, ["ecr/${local.name}"]))
   computed_aliases                       = lookup(var.ecr_kms_key, "computed_aliases", {})
   aliases_use_name_prefix                = lookup(var.ecr_kms_key, "aliases_use_name_prefix", false)
   multi_region                           = lookup(var.ecr_kms_key, "multi_region", false)
@@ -45,5 +45,7 @@ module "kms" {
   create_replica_external                = lookup(var.ecr_kms_key, "create_replica_external", false)
   primary_external_key_arn               = lookup(var.ecr_kms_key, "primary_external_key_arn", null)
   grants                                 = lookup(var.ecr_kms_key, "grants", {})
-  tags                                   = lookup(var.ecr_kms_key, "tags", var.tags)
+  overrides                              = var.overrides
+  ssm_parameter_name                     = lookup(var.ecr_kms_key, "ssm_parameter_name", "/kms/ecr/${local.name}")
+  tags                                   = lookup(var.ecr_kms_key, "tags", local.tags)
 }
