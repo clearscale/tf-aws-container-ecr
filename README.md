@@ -11,6 +11,11 @@ This module is designed for the creation and management of ECR Docker image repo
 | Support a default policy.                 | A default IAM security policy is intact. Additional policies can be added using `var.ecr_policy_statements`. If repository READONLY access is the only permission provided. Read, Write, and Copy permissions can be given using `var.read`, `var.write`, and `var.copy` respectively. The default policy can be overridden with `var.policy`.                    |
 | Support a default lifecycle policy.       | The default lifecycle is set to expire any untagged images that are older than 7 days.                                                                                                                                                                                                             |
 | Perform automatic security scanning.      | Images are set to scan by default every time an image or updated image is pushed to the repository.                                                                                                                                                                                                |
+
+## Security Review Notes
+
+None at this time.
+
 ## Usage
 
 ```terraform
@@ -51,6 +56,7 @@ terraform apply -var='name=test'
 ```bash
 terraform destroy -var='name=test'
 ```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -63,7 +69,7 @@ terraform destroy -var='name=test'
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.82.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.56.1 |
 
 ## Modules
 

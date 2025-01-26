@@ -1,3 +1,10 @@
+# provider "aws" {
+#   region = local.region
+#   default_tags {
+#     tags = local.tags
+#   }
+# }
+
 #
 # ClearScale Standardization
 #
@@ -17,4 +24,4 @@ module "std" {
 # AWS Data Variables
 #
 data "aws_caller_identity" "this" {}
-data "aws_partition" "this" {}
+data "aws_partition"       "this" {}
